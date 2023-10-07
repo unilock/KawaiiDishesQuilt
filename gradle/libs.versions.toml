@@ -1,0 +1,28 @@
+[versions]
+# The latest versions are available at https://lambdaurora.dev/tools/import_quilt.html
+minecraft = "1.20.1"
+quilt_mappings = "1.20.1+build.23"
+quilt_loader = "0.21.0"
+
+quilted_fabric_api = "7.3.1+0.89.3-1.20.1"
+geckolib = "4.2.2"
+jei = "15.2.0.27"
+porting_lib = "2.1.1142+1.20-entity-refactor"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+quilt_mappings = { module = "org.quiltmc:quilt-mappings", version.ref = "quilt_mappings" }
+quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loader" }
+
+quilted_fabric_api = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api", version.ref = "quilted_fabric_api" }
+geckolib = { module = "software.bernie.geckolib:geckolib-fabric-1.20.1", version.ref = "geckolib" }
+jei_common_api = { module = "mezz.jei:jei-1.20.1-common-api", version.ref = "jei" }
+jei_fabric_api = { module = "mezz.jei:jei-1.20.1-fabric-api", version.ref = "jei" }
+jei = { module = "mezz.jei:jei-1.20.1-fabric", version.ref = "jei" }
+porting_lib = { module = "io.github.fabricators_of_create.Porting-Lib:Porting-Lib", version.ref = "porting_lib" }
+
+[bundles]
+jei_api = ["jei_common_api", "jei_fabric_api"]
+
+[plugins]
+quilt_loom = { id = "org.quiltmc.loom", version = "1.4.1" }
