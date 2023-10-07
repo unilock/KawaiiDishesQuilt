@@ -23,9 +23,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.Nonnull;
 
 public class CoffeePressBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -52,14 +51,14 @@ public class CoffeePressBlock extends Block implements EntityBlock {
         properties.add( PRESSED );
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
     public BlockState mirror( BlockState state, Mirror mirrorIn )
     {
         return state.rotate( mirrorIn.getRotation( state.getValue( FACING ) ) );
     }
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
     public BlockState rotate( BlockState state, Rotation rot )

@@ -14,12 +14,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class CoffeePressBlockEntity extends BlockEntity {
@@ -110,7 +108,7 @@ public class CoffeePressBlockEntity extends BlockEntity {
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
 
                 return true;
             }
@@ -120,9 +118,9 @@ public class CoffeePressBlockEntity extends BlockEntity {
                 return 1;
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                 if(!isItemValid(slot, stack)) {
                     return stack;
                 }

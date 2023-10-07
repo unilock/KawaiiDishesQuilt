@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+
 import java.util.function.Consumer;
 
 public class CraftingRecipeSupplier extends RecipeProvider implements IConditionBuilder {

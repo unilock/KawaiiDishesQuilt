@@ -15,8 +15,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class IceCreamMachineRecipeCategory implements IRecipeCategory<IceCreamMachineRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(KawaiiDishes.modId, "ice_cream_making");
@@ -53,7 +52,7 @@ public class IceCreamMachineRecipeCategory implements IRecipeCategory<IceCreamMa
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull IceCreamMachineRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull IceCreamMachineRecipe recipe, @NotNull IFocusGroup focusGroup) {
 
 
         builder.addSlot(RecipeIngredientRole.INPUT,55,29).addItemStack(recipe.getIngredients().get(0).getItems()[0]);

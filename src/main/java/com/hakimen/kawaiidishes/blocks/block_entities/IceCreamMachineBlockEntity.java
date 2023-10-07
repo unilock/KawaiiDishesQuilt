@@ -32,7 +32,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvider, BlockEntityTicker<IceCreamMachineBlockEntity> {
@@ -190,7 +189,7 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
                 switch (slot) {
                     case 0 -> {
                         return stack.getItem().equals(Items.SNOWBALL);
@@ -211,9 +210,9 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
                 return slot == 4 ? 1 : 64;
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                 if (!isItemValid(slot, stack)) {
                     return stack;
                 }

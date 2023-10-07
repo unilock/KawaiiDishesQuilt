@@ -15,8 +15,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class BlendingRecipeCategory implements IRecipeCategory<BlenderRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(KawaiiDishes.modId, "blending");
@@ -52,7 +51,7 @@ public class BlendingRecipeCategory implements IRecipeCategory<BlenderRecipe> {
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull BlenderRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull BlenderRecipe recipe, @NotNull IFocusGroup focusGroup) {
         for (int i = 0; i < recipe.getIngredients().get(0).getItems().length; i++) {
             builder.addSlot(RecipeIngredientRole.INPUT,45,27+(i*18)).addItemStack(recipe.getIngredients().get(0).getItems()[i]);
 

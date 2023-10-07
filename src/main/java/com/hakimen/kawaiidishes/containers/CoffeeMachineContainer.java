@@ -13,8 +13,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class CoffeeMachineContainer extends AbstractContainerMenu {
     public final CoffeeMachineBlockEntity blockEntity;
@@ -76,9 +75,9 @@ public class CoffeeMachineContainer extends AbstractContainerMenu {
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack quickMoveStack( @Nonnull Player player, int index )
+    public ItemStack quickMoveStack( @NotNull Player player, int index )
     {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);

@@ -31,7 +31,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvider,BlockEntityTicker<CoffeeMachineBlockEntity> {
@@ -175,7 +174,7 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
                 switch (slot){
                     case 0 ->{
                         return stack.is(Items.WATER_BUCKET);
@@ -194,9 +193,9 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
                 return slot == 5 ? 1 : 64;
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                 if(!isItemValid(slot, stack)) {
                     return stack;
                 }

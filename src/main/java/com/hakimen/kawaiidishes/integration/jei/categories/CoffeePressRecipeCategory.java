@@ -16,8 +16,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class CoffeePressRecipeCategory implements IRecipeCategory<CoffeePressRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(KawaiiDishes.modId, "coffee_pressing");
@@ -56,7 +55,7 @@ public class CoffeePressRecipeCategory implements IRecipeCategory<CoffeePressRec
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CoffeePressRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull CoffeePressRecipe recipe, @NotNull IFocusGroup focusGroup) {
         for (int i = 0; i < recipe.getIngredients().get(0).getItems().length; i++) {
             builder.addSlot(RecipeIngredientRole.INPUT,19,11+(i*18)).addItemStack(recipe.getIngredients().get(0).getItems()[i]);
 

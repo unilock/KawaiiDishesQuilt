@@ -1,8 +1,14 @@
 package com.hakimen.kawaiidishes.integration.jei;
 
 import com.hakimen.kawaiidishes.KawaiiDishes;
-import com.hakimen.kawaiidishes.integration.jei.categories.*;
-import com.hakimen.kawaiidishes.recipes.*;
+import com.hakimen.kawaiidishes.integration.jei.categories.BlendingRecipeCategory;
+import com.hakimen.kawaiidishes.integration.jei.categories.CoffeeMachineRecipeCategory;
+import com.hakimen.kawaiidishes.integration.jei.categories.CoffeePressRecipeCategory;
+import com.hakimen.kawaiidishes.integration.jei.categories.IceCreamMachineRecipeCategory;
+import com.hakimen.kawaiidishes.recipes.BlenderRecipe;
+import com.hakimen.kawaiidishes.recipes.CoffeeMachineRecipe;
+import com.hakimen.kawaiidishes.recipes.CoffeePressRecipe;
+import com.hakimen.kawaiidishes.recipes.IceCreamMachineRecipe;
 import com.hakimen.kawaiidishes.registry.ItemRegister;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;

@@ -30,7 +30,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class BlenderBlockEntity extends BlockEntity implements MenuProvider,BlockEntityTicker<BlenderBlockEntity> {
@@ -178,7 +177,7 @@ public class BlenderBlockEntity extends BlockEntity implements MenuProvider,Bloc
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
                 return true;
             }
 
@@ -190,9 +189,9 @@ public class BlenderBlockEntity extends BlockEntity implements MenuProvider,Bloc
                 return slot == 2 ? 64 : 1;
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                 if(!isItemValid(slot, stack)) {
                     return stack;
                 }

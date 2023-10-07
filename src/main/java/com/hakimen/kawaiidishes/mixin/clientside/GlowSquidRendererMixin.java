@@ -1,7 +1,6 @@
 package com.hakimen.kawaiidishes.mixin.clientside;
 
 import net.minecraft.client.renderer.entity.GlowSquidRenderer;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.GlowSquid;
 import org.spongepowered.asm.mixin.Final;
