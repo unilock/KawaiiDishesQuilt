@@ -19,6 +19,10 @@ repositories {
 		name = 'DevOS'
 		url = 'https://mvn.devos.one/snapshots/'
 	}
+	maven {
+		name = 'Fuzs Mod Resources'
+		url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven/'
+	}
     maven {
         name = 'GeckoLib'
         url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
@@ -56,11 +60,12 @@ dependencies {
     minecraft libs.minecraft
     mappings loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
+        parchment("org.parchmentmc.data:parchment-1.20.1:2023.09.03@zip")
     }
     modImplementation libs.quilt.loader
 
     modImplementation libs.quilted.fabric.api
+	modApi libs.forge.config.api
     modImplementation libs.geckolib
     modCompileOnlyApi libs.bundles.jei.api
 	modImplementation include(libs.porting.lib.get())
