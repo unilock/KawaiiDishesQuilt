@@ -1,0 +1,44 @@
+{
+	"schema_version": 1,
+	"quilt_loader": {
+		"group": "com.hakimen",
+		"id": "kawaiidishes",
+		"version": "${version}",
+		"metadata": {
+			"name": "Kawaii Dishes",
+			"description": "A mod about maids, food, and other stuff",
+			"contributors": {
+				"Hakimen": "Owner",
+				"unilock": "Quilt port"
+			},
+			"contact": {
+				"sources": "https://github.com/JheffersonMarques/KawaiiDishes"
+			},
+			"icon": "assets/kawaiidishes/icon.png"
+		},
+		"intermediate_mappings": "net.fabricmc:intermediary",
+		"entrypoints": {
+			"init": "com.hakimen.kawaiidishes.KawaiiDishes",
+			"init_client": "com.hakimen.kawaiidishes.KawaiiDishesClient"
+		},
+		"depends": [
+			{
+				"id": "quilt_loader",
+				"versions": "*"
+			},
+			{
+				"id": "quilted_fabric_api",
+				"versions": "*"
+			},
+			{
+				"id": "minecraft",
+				"versions": ">=1.20.1"
+			},
+			{
+				"id": "geckolib",
+				"versions": "*"
+			}
+		]
+	},
+	"mixin": "KawaiiDishes.mixins.json"
+}
