@@ -1,16 +1,18 @@
 package com.hakimen.kawaiidishes.registry;
 
 import com.hakimen.kawaiidishes.KawaiiDishes;
-import com.hakimen.kawaiidishes.recipes.*;
+import com.hakimen.kawaiidishes.recipes.BlenderRecipe;
+import com.hakimen.kawaiidishes.recipes.CoffeeMachineRecipe;
+import com.hakimen.kawaiidishes.recipes.CoffeePressRecipe;
+import com.hakimen.kawaiidishes.recipes.IceCreamMachineRecipe;
+import io.github.fabricators_of_create.porting_lib.util.LazyRegistrar;
+import io.github.fabricators_of_create.porting_lib.util.RegistryObject;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public class RecipeRegister {
-    public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
-            DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, KawaiiDishes.modId);
+    public static final LazyRegistrar<RecipeSerializer<?>> SERIALIZERS =
+            LazyRegistrar.create(Registries.RECIPE_SERIALIZER, KawaiiDishes.modId);
 
     public static final RegistryObject<RecipeSerializer<CoffeePressRecipe>> CoffeePressRecipeSerializer =
             SERIALIZERS.register("coffee_pressing", () -> CoffeePressRecipe.Serializer.INSTANCE);
@@ -26,7 +28,7 @@ public class RecipeRegister {
             SERIALIZERS.register("blending", () -> BlenderRecipe.Serializer.INSTANCE);
 
 
-    public static void register(IEventBus eventBus) {
-        SERIALIZERS.register(eventBus);
+    public static void register() {
+        SERIALIZERS.register();
     }
 }

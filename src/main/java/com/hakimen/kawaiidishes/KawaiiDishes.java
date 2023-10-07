@@ -11,6 +11,7 @@ import com.hakimen.kawaiidishes.registry.PacketRegister;
 import com.hakimen.kawaiidishes.registry.Registration;
 import com.hakimen.kawaiidishes.utils.MaidMobEventHandler;
 import com.mojang.logging.LogUtils;
+import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,49 +20,32 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.slf4j.Logger;
 
 import java.util.Random;
 
-
-
-@Mod("kawaiidishes")
-public class KawaiiDishes {
-
+public class KawaiiDishes implements ModInitializer {
     // Directly reference a slf4j logger
     public static final Random RANDOM = new Random();
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String modId = "kawaiidishes";
-    public KawaiiDishes() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, KawaiiDishesClientConfig.clientSpec, "kawaii-dishes-client.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, KawaiiDishesCommonConfig.commonSpec, "kawaii-dishes-common.toml");
 
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+	@Override
+	public void onInitialize(ModContainer mod) {
+		ForgeConfigRegistry.INSTANCE.register(modId, ModConfig.Type.CLIENT, KawaiiDishesClientConfig.clientSpec, "kawaii-dishes-client.toml");
+		ForgeConfigRegistry.INSTANCE.register(modId, ModConfig.Type.COMMON, KawaiiDishesCommonConfig.commonSpec, "kawaii-dishes-common.toml");
 
-        Registration.init();
-
-        PacketRegister.register();
-
-        bus.addListener(this::enqueueIMC);
-        bus.addListener(this::clientStartup);
-        bus.addListener(this::setup);
-
-
-        MinecraftForge.EVENT_BUS.addListener(this::onLivingSpecialSpawn);
-        MinecraftForge.EVENT_BUS.register(this);
-
-    }
+		Registration.init();
+		PacketRegister.register();
+	}
 
     public void onLivingSpecialSpawn(MobSpawnEvent event) {
         Entity entity = event.getEntity();

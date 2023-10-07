@@ -1,16 +1,15 @@
 package com.hakimen.kawaiidishes.registry;
 
 import com.hakimen.kawaiidishes.blocks.block_entities.*;
+import io.github.fabricators_of_create.porting_lib.util.LazyRegistrar;
+import io.github.fabricators_of_create.porting_lib.util.RegistryObject;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import static com.hakimen.kawaiidishes.KawaiiDishes.modId;
 
 public class BlockEntityRegister {
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES,modId);
+    public static final LazyRegistrar<BlockEntityType<?>> BLOCK_ENTITIES = LazyRegistrar.create(Registries.BLOCK_ENTITY_TYPE, modId);
 
     public static final RegistryObject<BlockEntityType<CoffeePressBlockEntity>> coffeePress = BLOCK_ENTITIES.register("coffee_press_entity",
             ()->BlockEntityType.Builder.of(CoffeePressBlockEntity::new,BlockRegister.coffeePress.get()).build(null));
@@ -50,7 +49,7 @@ public class BlockEntityRegister {
 
 
 
-    public static void register(IEventBus bus){
-        BLOCK_ENTITIES.register(bus);
+    public static void register(){
+        BLOCK_ENTITIES.register();
     }
 }

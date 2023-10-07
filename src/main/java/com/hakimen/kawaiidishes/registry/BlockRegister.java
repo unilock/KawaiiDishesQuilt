@@ -1,16 +1,15 @@
 package com.hakimen.kawaiidishes.registry;
 
 import com.hakimen.kawaiidishes.blocks.*;
+import io.github.fabricators_of_create.porting_lib.util.LazyRegistrar;
+import io.github.fabricators_of_create.porting_lib.util.RegistryObject;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import static com.hakimen.kawaiidishes.KawaiiDishes.modId;
 
 public class BlockRegister {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS,modId);
+    public static final LazyRegistrar<Block> BLOCKS = LazyRegistrar.create(Registries.BLOCK, modId);
 
     public static final RegistryObject<MugBlock> mug = BLOCKS.register("mug",MugBlock::new);
     public static final RegistryObject<GlassCupBlock> glassCup = BLOCKS.register("glass_cup",GlassCupBlock::new);
@@ -81,7 +80,7 @@ public class BlockRegister {
 
     public static final RegistryObject<CoffeePlantBlock> coffeePlant = BLOCKS.register("coffee_bush", CoffeePlantBlock::new);
 
-    public static void register(IEventBus bus){
-        BLOCKS.register(bus);
+    public static void register(){
+        BLOCKS.register();
     }
 }

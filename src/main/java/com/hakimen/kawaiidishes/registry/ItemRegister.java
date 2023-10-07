@@ -6,16 +6,15 @@ import com.hakimen.kawaiidishes.items.PlaceableFoodItem;
 import com.hakimen.kawaiidishes.items.UnbindingCookie;
 import com.hakimen.kawaiidishes.items.armor.ArmorMaterials;
 import com.hakimen.kawaiidishes.items.armor.GenericGeoArmorItem;
+import io.github.fabricators_of_create.porting_lib.util.LazyRegistrar;
+import io.github.fabricators_of_create.porting_lib.util.RegistryObject;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +34,8 @@ public class ItemRegister
     public static FoodProperties candy = new FoodProperties.Builder().nutrition(2).saturationMod(0.5f).build();
 
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, modId);
-    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, modId);
+    public static final LazyRegistrar<Item> ITEMS = LazyRegistrar.create(Registries.ITEM, modId);
+    public static final LazyRegistrar<CreativeModeTab> TABS = LazyRegistrar.create(Registries.CREATIVE_MODE_TAB, modId);
 
     public static final RegistryObject<Item> mug = ITEMS.register("mug", () -> new BlockItem(BlockRegister.mug.get(), new Item.Properties()));
     public static final RegistryObject<Item> glassCup = ITEMS.register("glass_cup", () -> new BlockItem(BlockRegister.glassCup.get(), new Item.Properties()));
@@ -169,8 +168,8 @@ public class ItemRegister
     public static final RegistryObject<Item> honeyCookie = ITEMS.register("honey_cookie", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().saturationMod(1).nutrition(3).build())));
     public static final RegistryObject<Item> chocolateCookie = ITEMS.register("chocolate_cookie", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().saturationMod(1).nutrition(3).build())));
     public static final RegistryObject<Item> goldenCookie = ITEMS.register("golden_cookie", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().saturationMod(1).nutrition(6).alwaysEat()
-            .effect(() -> new MobEffectInstance(MobEffects.ABSORPTION, 20 * 60, 1), 1f)
-            .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 20 * 20, 1), 1f).build())));
+            .effect(new MobEffectInstance(MobEffects.ABSORPTION, 20 * 60, 1), 1f)
+            .effect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 20, 1), 1f).build())));
 
     public static final RegistryObject<Item> unbindingCookie = ITEMS.register("cookie_of_unbinding", () -> new UnbindingCookie(new Item.Properties().food(new FoodProperties.Builder().saturationMod(1).nutrition(3).alwaysEat().build())));
 
@@ -432,7 +431,7 @@ public class ItemRegister
         }
     }
 
-    public static final RegistryObject<CreativeModeTab> COSMETICS_TAB = TABS.register("cosmetics", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> COSMETICS_TAB = TABS.register("cosmetics", () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup.kawaiidishes.cosmetics"))
             .icon(() -> new ItemStack(dresses.get("black").get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -457,7 +456,7 @@ public class ItemRegister
             })
             .build());
 
-    public static final RegistryObject<CreativeModeTab> BLOCKS_TAB = TABS.register("blocks", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> BLOCKS_TAB = TABS.register("blocks", () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup.kawaiidishes.blocks"))
             .icon(() -> new ItemStack(coffeeMachine.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -472,8 +471,8 @@ public class ItemRegister
                 });
             })
             .build());
-    
-    public static final RegistryObject<CreativeModeTab> DECORATION_TAB = TABS.register("decoration", () -> CreativeModeTab.builder()
+
+    public static final RegistryObject<CreativeModeTab> DECORATION_TAB = TABS.register("decoration", () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup.kawaiidishes.decoration"))
             .icon(() -> new ItemStack(whiteStool.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -486,7 +485,7 @@ public class ItemRegister
             })
             .build());
 
-    public static final RegistryObject<CreativeModeTab> FOOD_TAB = TABS.register("foods", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> FOOD_TAB = TABS.register("foods", () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup.kawaiidishes.foods"))
             .icon(() -> new ItemStack(roastedCoffeeBeans.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -511,9 +510,9 @@ public class ItemRegister
                 });
             })
             .build());
-    public static void register(IEventBus bus) {
+    public static void register() {
         preGen();
-        TABS.register(bus);
-        ITEMS.register(bus);
+        TABS.register();
+        ITEMS.register();
     }
 }
