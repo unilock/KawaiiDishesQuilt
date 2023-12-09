@@ -11,12 +11,12 @@ import java.util.List;
 
 @Mixin(StructureTemplatePool.class)
 public interface StructureTemplatePoolMixin {
-	@Accessor
-	ObjectArrayList<StructurePoolElement> getTemplates();
+    @Accessor
+    ObjectArrayList<StructurePoolElement> getTemplates();
 
-	@Accessor
-	List<Pair<StructurePoolElement, Integer>> getRawTemplates();
+    @Accessor
+    List<Pair<StructurePoolElement, Integer>> getRawTemplates();
 
-	@Accessor
-	void setRawTemplates(List<Pair<StructurePoolElement, Integer>> value);
+    @Accessor
+    void setRawTemplates(List<Pair<StructurePoolElement, Integer>> value);
 }

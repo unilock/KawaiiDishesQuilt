@@ -2,6 +2,8 @@ package com.hakimen.kawaiidishes.blocks;
 
 import com.hakimen.kawaiidishes.blocks.block_entities.CoffeePressBlockEntity;
 import com.hakimen.kawaiidishes.registry.ItemRegister;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +21,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -66,7 +67,6 @@ public class CoffeePressBlock extends Block implements EntityBlock {
         return state.setValue( FACING, rot.rotate( state.getValue( FACING ) ) );
     }
 
-    @javax.annotation.Nullable
     @Override
     public BlockState getStateForPlacement( BlockPlaceContext placement )
     {
@@ -80,13 +80,13 @@ public class CoffeePressBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-        if(level.getBlockEntity(pos) instanceof CoffeePressBlockEntity blockEntity){
-            for (int i = 0; i < blockEntity.inventory.getSlots(); i++) {
-                level.addFreshEntity(new ItemEntity(level,pos.getX(),pos.getY(),pos.getZ(),blockEntity.inventory.getStackInSlot(i)));
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+        if(level.getBlockEntity(pos) instanceof CoffeePressBlockEntity coffeePressBlockEntity){
+            for (int i = 0; i < coffeePressBlockEntity.inventory.getSlots().size(); i++) {
+                level.addFreshEntity(new ItemEntity(level,pos.getX(),pos.getY(),pos.getZ(),coffeePressBlockEntity.inventory.getStackInSlot(i)));
             }
         }
-        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        super.playerDestroy(level, player, pos, state, blockEntity, tool);
     }
 
     @Override
@@ -96,9 +96,11 @@ public class CoffeePressBlock extends Block implements EntityBlock {
             ItemStack currentItemInHand = pPlayer.getItemInHand(pHand).copy();
             if(currentItemInHand.equals(ItemStack.EMPTY)){
                 if(pPlayer.isCrouching()){
-                    for (int i = coffeePress.inventory.getSlots()-1; i > -1; i--) {
+                    for (int i = coffeePress.inventory.getSlots().size()-1; i > -1; i--) {
                         if(coffeePress.inventory.getStackInSlot(i) != ItemStack.EMPTY){
-                            pPlayer.addItem(coffeePress.inventory.extractItem(i,1,false));
+                            // TODO: ehhh
+                            pPlayer.addItem(coffeePress.inventory.getStackInSlot(i));
+                            coffeePress.inventory.setStackInSlot(i,ItemStack.EMPTY);
                             break;
                         }
                     }
@@ -124,10 +126,12 @@ public class CoffeePressBlock extends Block implements EntityBlock {
             }else if(coffeePress.inventory.getStackInSlot(0).getCount() < 3){
                 var stack = currentItemInHand.copy();
                 stack.setCount(1);
-                for (int i = 0; i < coffeePress.inventory.getSlots(); i++) {
+                for (int i = 0; i < coffeePress.inventory.getSlots().size(); i++) {
                     if(coffeePress.inventory.getStackInSlot(i) == ItemStack.EMPTY){
-                        coffeePress.inventory.insertItem(i,stack,false);
+                        Transaction transaction = Transaction.openOuter();
+                        coffeePress.inventory.insertSlot(i,ItemVariant.of(stack),stack.getCount(),transaction);
                         pPlayer.getItemInHand(pHand).shrink(1);
+                        transaction.commit();
                         break;
                     }
                 }

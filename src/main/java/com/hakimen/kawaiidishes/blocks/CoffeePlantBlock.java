@@ -16,14 +16,15 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 import static net.minecraftforge.common.ForgeHooks.onCropsGrowPre;
 
@@ -100,15 +101,15 @@ public class CoffeePlantBlock extends BushBlock implements BonemealableBlock {
 
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         int i = state.getValue(AGE);
         boolean flag = i == 3;
         int j = 1 + level.random.nextInt(2);
         if(i > 1){
             popResource(level, pos, new ItemStack(ItemRegister.coffeeFruit.get(), j + (flag ? 1 : 0)));
         }
-        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        super.playerDestroy(level, player, pos, state, blockEntity, tool);
     }
 
-    
+
 }

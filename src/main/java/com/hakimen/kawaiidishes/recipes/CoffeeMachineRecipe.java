@@ -179,8 +179,8 @@ public class CoffeeMachineRecipe implements Recipe<SimpleContainer> {
             buf.writeInt(recipe.ticks);
             buf.writeBoolean(recipe.requireWater);
             buf.writeBoolean(recipe.requireMilk);
-            buf.writeItemStack(recipe.itemOnOutput, false);
-            buf.writeItemStack(recipe.getResultItem(null), false);
+            buf.writeItem(recipe.itemOnOutput);
+            buf.writeItem(recipe.getResultItem(null));
         }
 
 

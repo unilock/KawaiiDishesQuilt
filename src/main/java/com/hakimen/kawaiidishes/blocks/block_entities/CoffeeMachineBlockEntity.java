@@ -3,8 +3,10 @@ package com.hakimen.kawaiidishes.blocks.block_entities;
 import com.hakimen.kawaiidishes.containers.CoffeeMachineContainer;
 import com.hakimen.kawaiidishes.recipes.CoffeeMachineRecipe;
 import com.hakimen.kawaiidishes.registry.BlockEntityRegister;
+import io.github.fabricators_of_create.porting_lib.transfer.item.ItemStackHandler;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -23,11 +25,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +33,6 @@ import java.util.Optional;
 public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvider,BlockEntityTicker<CoffeeMachineBlockEntity> {
 
     public final ItemStackHandler inventory = createHandler();
-    private final LazyOptional<IItemHandler> invHandler = LazyOptional.of(() -> inventory);
     public int progress = 0;
     public int recipeTicks = 0;
 
@@ -96,8 +92,8 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
     }
     public static boolean hasRecipe(CoffeeMachineBlockEntity entity) {
         Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots());
-        for (int i = 0; i < entity.inventory.getSlots(); i++) {
+        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots().size());
+        for (int i = 0; i < entity.inventory.getSlots().size(); i++) {
             inventory.setItem(i, entity.inventory.getStackInSlot(i));
         }
 
@@ -112,8 +108,8 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
     public void tick(Level pLevel, BlockPos pPos, BlockState pState, CoffeeMachineBlockEntity pBlockEntity) {
         if(hasRecipe(pBlockEntity)){
             Level level = pBlockEntity.level;
-            SimpleContainer inventory = new SimpleContainer(pBlockEntity.inventory.getSlots());
-            for (int i = 0; i < pBlockEntity.inventory.getSlots(); i++) {
+            SimpleContainer inventory = new SimpleContainer(pBlockEntity.inventory.getSlots().size());
+            for (int i = 0; i < pBlockEntity.inventory.getSlots().size(); i++) {
                 inventory.setItem(i, pBlockEntity.inventory.getStackInSlot(i));
             }
             Optional<CoffeeMachineRecipe> match = level.getRecipeManager()
@@ -130,7 +126,7 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
                     if(progress >= recipeTicks) {
                         isCrafting = false;
                         progress = 0;
-                        for (int i = 0; i < pBlockEntity.inventory.getSlots()-1; i++) {
+                        for (int i = 0; i < pBlockEntity.inventory.getSlots().size()-1; i++) {
                             if(i == 0 || i == 1){
                                 var stack = pBlockEntity.inventory.getStackInSlot(i).getItem().getCraftingRemainingItem();
                                 if (stack == null) {
@@ -138,7 +134,7 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
                                 }
                                 pBlockEntity.inventory.setStackInSlot(i, stack.getDefaultInstance());
                             }else{
-                                pBlockEntity.inventory.extractItem(i,1,false);
+                                pBlockEntity.inventory.setStackInSlot(i, ItemStack.EMPTY);
                             }
 
                         }
@@ -155,16 +151,6 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
         setChanged();
     }
 
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return (LazyOptional<T>) invHandler;
-        } else {
-            return super.getCapability(cap,side);
-        }
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override
@@ -174,19 +160,17 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
             }
 
             @Override
-            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            public boolean isItemValid(int slot, ItemVariant resource, int count) {
                 switch (slot){
                     case 0 ->{
-                        return stack.is(Items.WATER_BUCKET);
+                        return resource.isOf(Items.WATER_BUCKET);
                     }
                     case 1 ->{
-                        return stack.is(Items.MILK_BUCKET.asItem())||stack.is(Items.BUCKET.asItem());
+                        return resource.isOf(Items.MILK_BUCKET.asItem())||resource.isOf(Items.BUCKET.asItem());
                     }
                 }
                 return true;
             }
-
-
 
             @Override
             public int getSlotLimit(int slot) {
@@ -194,13 +178,12 @@ public class CoffeeMachineBlockEntity extends BlockEntity implements MenuProvide
             }
 
             @NotNull
-            @Override
-            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                if(!isItemValid(slot, stack)) {
-                    return stack;
+            public long insertSlot(int slot, ItemVariant resource, long maxAmount, TransactionContext transaction) {
+                if(!isItemValid(slot, resource, (int) maxAmount)) {
+                    return 0;
                 }
 
-                return super.insertItem(slot, stack, simulate);
+                return super.insertSlot(slot, resource, maxAmount, transaction);
             }
         };
     }

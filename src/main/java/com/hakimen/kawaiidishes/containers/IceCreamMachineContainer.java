@@ -3,21 +3,20 @@ package com.hakimen.kawaiidishes.containers;
 import com.hakimen.kawaiidishes.blocks.block_entities.IceCreamMachineBlockEntity;
 import com.hakimen.kawaiidishes.registry.BlockRegister;
 import com.hakimen.kawaiidishes.registry.ContainerRegister;
+import io.github.fabricators_of_create.porting_lib.transfer.item.ItemStackHandler;
+import io.github.fabricators_of_create.porting_lib.transfer.item.SlotItemHandler;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class IceCreamMachineContainer extends AbstractContainerMenu {
     public final IceCreamMachineBlockEntity blockEntity;
-    private final IItemHandler playerInventory;
+    private final ItemStackHandler playerInventory;
     private final ContainerData data;
 
 
@@ -30,17 +29,14 @@ public class IceCreamMachineContainer extends AbstractContainerMenu {
         super(ContainerRegister.iceCreamMachine.get(),windowId);
         this.data = data;
         blockEntity = (IceCreamMachineBlockEntity)entity;
-        this.playerInventory = new InvWrapper(inv.player.getInventory());
+        this.playerInventory = (ItemStackHandler) InventoryStorage.of(inv.player.getInventory(), null);
 
         if(blockEntity != null){
-            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-
-                addSlot(new SlotItemHandler(h,0,62,36));
-                addSlot(new SlotItemHandler(h,1,26,18));
-                addSlot(new SlotItemHandler(h,2,26,36));
-                addSlot(new SlotItemHandler(h,3,26,54));
-                addSlot(new SlotItemHandler(h,4,122,36));
-            });
+            addSlot(new SlotItemHandler(blockEntity.inventory,0,62,36));
+            addSlot(new SlotItemHandler(blockEntity.inventory,1,26,18));
+            addSlot(new SlotItemHandler(blockEntity.inventory,2,26,36));
+            addSlot(new SlotItemHandler(blockEntity.inventory,3,26,54));
+            addSlot(new SlotItemHandler(blockEntity.inventory,4,122,36));
         }
         layoutPlayerInventorySlots(8,86);
 
@@ -49,7 +45,7 @@ public class IceCreamMachineContainer extends AbstractContainerMenu {
 
 
 
-    private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
+    private int addSlotRange(ItemStackHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
             addSlot(new SlotItemHandler(handler, index, x, y));
             x += dx;
@@ -58,7 +54,7 @@ public class IceCreamMachineContainer extends AbstractContainerMenu {
         return index;
     }
 
-    private int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
+    private int addSlotBox(ItemStackHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
         for (int j = 0 ; j < verAmount ; j++) {
             index = addSlotRange(handler, index, x, y, horAmount, dx);
             y += dy;

@@ -4,6 +4,7 @@
   "package": "com.hakimen.kawaiidishes.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "EntityAccessor",
     "StructureTemplatePoolMixin"
   ],
   "client": [

@@ -3,6 +3,9 @@ package com.hakimen.kawaiidishes.blocks.block_entities;
 import com.hakimen.kawaiidishes.blocks.CoffeePressBlock;
 import com.hakimen.kawaiidishes.recipes.CoffeePressRecipe;
 import com.hakimen.kawaiidishes.registry.BlockEntityRegister;
+import io.github.fabricators_of_create.porting_lib.transfer.item.ItemStackHandler;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
@@ -11,19 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class CoffeePressBlockEntity extends BlockEntity {
 
     public final ItemStackHandler inventory = createHandler();
-    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> inventory);
 
     public boolean coffeeGotMade;
     public ItemStack coffeeMade = ItemStack.EMPTY;
@@ -47,19 +43,10 @@ public class CoffeePressBlockEntity extends BlockEntity {
         super.load(pTag);
     }
 
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-        if(cap == ForgeCapabilities.ITEM_HANDLER){
-            return (LazyOptional<T>) handler;
-        }else{
-            return super.getCapability(cap);
-        }
-    };
     public static boolean hasRecipe(CoffeePressBlockEntity entity) {
         Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots());
-        for (int i = 0; i < entity.inventory.getSlots(); i++) {
+        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots().size());
+        for (int i = 0; i < entity.inventory.getSlots().size(); i++) {
             if(entity.inventory.getStackInSlot(i) != ItemStack.EMPTY){
                 inventory.setItem(i, entity.inventory.getStackInSlot(i));
             }
@@ -71,14 +58,14 @@ public class CoffeePressBlockEntity extends BlockEntity {
 
     public static void craft(CoffeePressBlockEntity entity){
         Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots());
-        for (int i = 0; i < entity.inventory.getSlots(); i++) {
+        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots().size());
+        for (int i = 0; i < entity.inventory.getSlots().size(); i++) {
             inventory.setItem(i, entity.inventory.getStackInSlot(i));
         }
         Optional<CoffeePressRecipe> match = level.getRecipeManager()
                 .getRecipeFor(CoffeePressRecipe.Type.INSTANCE, inventory, level);
         if(match.isPresent()) {
-            for (int i = 0; i < entity.inventory.getSlots(); i++) {
+            for (int i = 0; i < entity.inventory.getSlots().size(); i++) {
                 var stack = entity.inventory.getStackInSlot(i).getItem().getCraftingRemainingItem();
                 if(stack == null){
                     entity.inventory.setStackInSlot(i,ItemStack.EMPTY);
@@ -108,8 +95,7 @@ public class CoffeePressBlockEntity extends BlockEntity {
             }
 
             @Override
-            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-
+            public boolean isItemValid(int slot, ItemVariant resource, int count) {
                 return true;
             }
 
@@ -118,14 +104,13 @@ public class CoffeePressBlockEntity extends BlockEntity {
                 return 1;
             }
 
-            @NotNull
             @Override
-            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                if(!isItemValid(slot, stack)) {
-                    return stack;
+            public long insertSlot(int slot, ItemVariant resource, long maxAmount, TransactionContext transaction) {
+                if(!isItemValid(slot, resource, (int) maxAmount)) {
+                    return 0;
                 }
 
-                return super.insertItem(slot, stack, simulate);
+                return super.insertSlot(slot, resource, maxAmount, transaction);
             }
         };
     }

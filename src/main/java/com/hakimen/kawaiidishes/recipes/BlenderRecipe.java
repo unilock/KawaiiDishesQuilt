@@ -156,8 +156,8 @@ public class BlenderRecipe implements Recipe<SimpleContainer> {
                 ing.toNetwork(buf);
             }
             buf.writeInt(recipe.ticks);
-            buf.writeItemStack(recipe.getResultItem(null), false);
-            buf.writeItemStack(recipe.onOutput, false);
+            buf.writeItem(recipe.getResultItem(null));
+            buf.writeItem(recipe.onOutput);
         }
 
         @SuppressWarnings("unchecked") // Need this wrapper, because generics

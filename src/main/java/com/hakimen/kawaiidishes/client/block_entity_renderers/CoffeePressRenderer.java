@@ -19,7 +19,7 @@ public class CoffeePressRenderer  implements BlockEntityRenderer<CoffeePressBloc
     @Override
     public void render(CoffeePressBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        for (int i = 0; i < pBlockEntity.inventory.getSlots(); i++) {
+        for (int i = 0; i < pBlockEntity.inventory.getSlots().size(); i++) {
             pPoseStack.pushPose();
             var itemStack = pBlockEntity.inventory.getStackInSlot(i);
             pPoseStack.translate(0.5, .35f+(i/16f), 0.5f);

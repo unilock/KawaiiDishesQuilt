@@ -4,8 +4,10 @@ import com.hakimen.kawaiidishes.containers.IceCreamMachineContainer;
 import com.hakimen.kawaiidishes.recipes.IceCreamMachineRecipe;
 import com.hakimen.kawaiidishes.registry.BlockEntityRegister;
 import com.hakimen.kawaiidishes.registry.ItemRegister;
+import io.github.fabricators_of_create.porting_lib.transfer.item.ItemStackHandler;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -24,12 +26,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -37,7 +33,6 @@ import java.util.Optional;
 public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvider, BlockEntityTicker<IceCreamMachineBlockEntity> {
 
     public final ItemStackHandler inventory = createHandler();
-    private final LazyOptional<IItemHandler> invHandler = LazyOptional.of(() -> inventory);
     public int progress = 0;
     public int recipeTicks = 0;
 
@@ -107,8 +102,8 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
 
     public static boolean hasRecipe(IceCreamMachineBlockEntity entity) {
         Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots());
-        for (int i = 0; i < entity.inventory.getSlots() - 1; i++) {
+        SimpleContainer inventory = new SimpleContainer(entity.inventory.getSlots().size());
+        for (int i = 0; i < entity.inventory.getSlots().size() - 1; i++) {
             if (entity.inventory.getStackInSlot(i) != ItemStack.EMPTY) {
                 inventory.setItem(i, entity.inventory.getStackInSlot(i));
             }
@@ -124,8 +119,8 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
 
         if (hasRecipe(pBlockEntity)) {
             Level level = pBlockEntity.level;
-            SimpleContainer inventory = new SimpleContainer(pBlockEntity.inventory.getSlots());
-            for (int i = 0; i < pBlockEntity.inventory.getSlots() - 1; i++) {
+            SimpleContainer inventory = new SimpleContainer(pBlockEntity.inventory.getSlots().size());
+            for (int i = 0; i < pBlockEntity.inventory.getSlots().size() - 1; i++) {
                 if (pBlockEntity.inventory.getStackInSlot(i) != ItemStack.EMPTY) {
                     inventory.setItem(i, pBlockEntity.inventory.getStackInSlot(i));
                 }
@@ -146,12 +141,12 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
                     if (progress >= recipeTicks) {
                         isCrafting = false;
                         progress = 0;
-                        for (int i = 0; i < pBlockEntity.inventory.getSlots() - 1; i++) {
+                        for (int i = 0; i < pBlockEntity.inventory.getSlots().size() - 1; i++) {
                             if (i == 1 || i == 2 || i == 3) {
-                                var stack = pBlockEntity.inventory.getStackInSlot(i).getCraftingRemainingItem();
-                                pBlockEntity.inventory.extractItem(i,1,false);
+                                var stack = pBlockEntity.inventory.getStackInSlot(i).getItem().getCraftingRemainingItem();
+                                pBlockEntity.inventory.setStackInSlot(i,ItemStack.EMPTY);
                                 if (!stack.equals(ItemStack.EMPTY)) {
-                                    pBlockEntity.inventory.setStackInSlot(i, stack);
+                                    pBlockEntity.inventory.setStackInSlot(i, stack.getDefaultInstance());
                                 }
                             } else {
                                 pBlockEntity.inventory.getStackInSlot(i).shrink(1);
@@ -170,16 +165,6 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
 
     }
 
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return (LazyOptional<T>) invHandler;
-        } else {
-            return super.getCapability(cap,side);
-        }
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override
@@ -189,16 +174,16 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
             }
 
             @Override
-            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            public boolean isItemValid(int slot, ItemVariant resource, int count) {
                 switch (slot) {
                     case 0 -> {
-                        return stack.getItem().equals(Items.SNOWBALL);
+                        return resource.getItem().equals(Items.SNOWBALL);
                     }
                     case 1, 2, 3 -> {
                         return true;
                     }
                     case 4 -> {
-                        return stack.getItem().equals(ItemRegister.glassCup.get());
+                        return resource.getItem().equals(ItemRegister.glassCup.get());
                     }
                 }
                 return false;
@@ -210,14 +195,13 @@ public class IceCreamMachineBlockEntity extends BlockEntity implements MenuProvi
                 return slot == 4 ? 1 : 64;
             }
 
-            @NotNull
             @Override
-            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                if (!isItemValid(slot, stack)) {
-                    return stack;
+            public long insertSlot(int slot, ItemVariant resource, long maxAmount, TransactionContext transaction) {
+                if (!isItemValid(slot, resource, (int) maxAmount)) {
+                    return 0;
                 }
 
-                return super.insertItem(slot, stack, simulate);
+                return super.insertSlot(slot, resource, maxAmount, transaction);
             }
         };
     }

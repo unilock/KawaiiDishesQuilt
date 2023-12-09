@@ -1,6 +1,7 @@
 package com.hakimen.kawaiidishes.blocks;
 
 import com.hakimen.kawaiidishes.blocks.block_entities.IceCreamMachineBlockEntity;
+import io.github.fabricators_of_create.porting_lib.util.NetworkHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +71,6 @@ public class IceCreamMachineBlock extends Block implements EntityBlock{
         return state.setValue( FACING, rot.rotate( state.getValue( FACING ) ) );
     }
 
-    @javax.annotation.Nullable
     @Override
     public BlockState getStateForPlacement( BlockPlaceContext placement )
     {
@@ -84,7 +83,7 @@ public class IceCreamMachineBlock extends Block implements EntityBlock{
         if (!pState.is(pNewState.getBlock())) {
             BlockEntity blockentity = pLevel.getBlockEntity(pPos);
             if (blockentity instanceof IceCreamMachineBlockEntity iceCreamMachineBlockEntity) {
-                for (int i = 0; i < iceCreamMachineBlockEntity.inventory.getSlots(); i++) {
+                for (int i = 0; i < iceCreamMachineBlockEntity.inventory.getSlots().size(); i++) {
                     pLevel.addFreshEntity(new ItemEntity(
                             pLevel,pPos.getX(),
                             pPos.getY(),

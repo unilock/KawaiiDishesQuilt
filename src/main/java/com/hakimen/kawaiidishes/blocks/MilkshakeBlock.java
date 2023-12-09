@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -67,7 +66,7 @@ public class MilkshakeBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         var stack = this.asItem().getDefaultInstance();
         stack.getOrCreateTag();
         if(level.getBlockEntity(pos) instanceof PlaceableFoodBlockEntity entity){
@@ -79,7 +78,7 @@ public class MilkshakeBlock extends Block implements EntityBlock {
             }
         }
         level.addFreshEntity(new ItemEntity(level,pos.getX(),pos.getY(),pos.getZ(),stack));
-        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        super.playerDestroy(level, player, pos, state, blockEntity, tool);
     }
 
     @Nullable

@@ -8,11 +8,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class VillageStructures {
         // Weight is handled by how many times the entry appears in this list.
         // We do not need to worry about immutability as this field is created using Lists.newArrayList(); which makes a mutable list.
         for (int i = 0; i < weight; i++) {
-			((StructureTemplatePoolMixin) pool).getTemplates().add(piece);
+            ((StructureTemplatePoolMixin) pool).getTemplates().add(piece);
         }
 
         // Use AccessTransformer or Accessor Mixin to make StructureTemplatePool's rawTemplates field public for us to see.
@@ -67,9 +67,9 @@ public class VillageStructures {
      * We use FMLServerAboutToStartEvent as the dynamic registry exists now and all JSON worldgen files were parsed.
      * Mod compat is best done here.
      */
-    public static void addNewVillageBuilding(ServerAboutToStartEvent event) {
-        Registry<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().registry(Registries.TEMPLATE_POOL).orElseThrow();
-        Registry<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
+    public static void addNewVillageBuilding(MinecraftServer server) {
+        Registry<StructureTemplatePool> templatePoolRegistry = server.registryAccess().registry(Registries.TEMPLATE_POOL).orElseThrow();
+        Registry<StructureProcessorList> processorListRegistry = server.registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
 
         // Adds our piece to all village houses pool
         // Note, the resourcelocation is getting the pool files from the data folder. Not assets folder.

@@ -17,16 +17,17 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 public class CakeBlock extends Block {
 
@@ -40,7 +41,7 @@ public class CakeBlock extends Block {
 
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         if(state.getValue(BITES) == 4) {
             level.addFreshEntity(new ItemEntity(level,
                     pos.getX(),
@@ -48,7 +49,7 @@ public class CakeBlock extends Block {
                     pos.getZ(),
                     this.asItem().getDefaultInstance()));
         }
-        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        super.playerDestroy(level, player, pos, state, blockEntity, tool);
     }
 
     @Override

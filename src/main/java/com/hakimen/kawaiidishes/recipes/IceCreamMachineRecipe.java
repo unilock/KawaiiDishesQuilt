@@ -147,8 +147,8 @@ public class IceCreamMachineRecipe implements Recipe<SimpleContainer> {
                 ing.toNetwork(buf);
             }
             buf.writeInt(recipe.ticks);
-            buf.writeItemStack(recipe.itemOnOutput, false);
-            buf.writeItemStack(recipe.getResultItem(null), false);
+            buf.writeItem(recipe.itemOnOutput);
+            buf.writeItem(recipe.getResultItem(null));
         }
 
         @SuppressWarnings("unchecked") // Need this wrapper, because generics
